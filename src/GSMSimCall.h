@@ -40,56 +40,56 @@
 
 #include <Arduino.h>
 #include "GSMSim.h"
+#include "GSMSimCallInfo.h"
 
+class GSMSimCall : public GSMSim
+{
+protected:
+public:
+  // Sınıfı Başlatıcı...
+  GSMSimCall(Stream &s) : GSMSim(s)
+  {
+    RESET_PIN = DEFAULT_RST_PIN;
+    LED_PIN = DEFAULT_LED_PIN;
+    LED_FLAG = DEFAULT_LED_FLAG;
+  }
 
-class GSMSimCall : public GSMSim {
-  protected :
+  GSMSimCall(Stream &s, unsigned int resetPin) : GSMSim(s, resetPin)
+  {
+    RESET_PIN = resetPin;
+    LED_PIN = DEFAULT_LED_PIN;
+    LED_FLAG = DEFAULT_LED_FLAG;
+  }
 
+  GSMSimCall(Stream &s, unsigned int resetPin, unsigned int ledPin, bool ledFlag) : GSMSim(s, resetPin, ledPin, ledFlag)
+  {
+    RESET_PIN = resetPin;
+    LED_PIN = ledPin;
+    LED_FLAG = ledFlag;
+  }
 
-  public :
-
-    // Sınıfı Başlatıcı...
-    GSMSimCall(Stream& s) : GSMSim(s) {
-      RESET_PIN = DEFAULT_RST_PIN;
-      LED_PIN = DEFAULT_LED_PIN;
-      LED_FLAG = DEFAULT_LED_FLAG;
-    }
-
-    GSMSimCall(Stream& s, unsigned int resetPin) : GSMSim(s, resetPin) {
-      RESET_PIN = resetPin;
-      LED_PIN = DEFAULT_LED_PIN;
-      LED_FLAG = DEFAULT_LED_FLAG;
-    }
-
-    GSMSimCall(Stream& s, unsigned int resetPin, unsigned int ledPin, bool ledFlag) : GSMSim(s, resetPin, ledPin, ledFlag) {
-      RESET_PIN = resetPin;
-      LED_PIN = ledPin;
-      LED_FLAG = ledFlag;
-    }
-
-    // Arama Fonksiyonları
-    bool initCall();
-    // arama yapar
-    bool call(char* phone_number);
-    // arama cevaplar
-    bool answer();
-    // aramayı sonlandırır
-    bool hangoff();
-    // arama durumu
-    int status();
-    bool setCLIP(bool active);
-    bool setCLIR(bool active);
-    // COLP u aktif veya pasif yapar
-    bool setCOLP(bool active);
-    // COLP aktif mi?
-    bool isCOLPActive();
-    // Arayanı söyleme aktif mi değil mi?
-    bool showCurrentCall(bool active);
-    // şimdi arayanı söyle
-    String readCurrentCall(String serialRaw);
-    // enable or disable reject all calls
-    bool setCallReject(bool rejectAll);
-
+  // Arama Fonksiyonları
+  bool initCall();
+  // arama yapar
+  bool call(char *phone_number);
+  // arama cevaplar
+  bool answer();
+  // aramayı sonlandırır
+  bool hangoff();
+  // arama durumu
+  int status();
+  bool setCLIP(bool active);
+  bool setCLIR(bool active);
+  // COLP u aktif veya pasif yapar
+  bool setCOLP(bool active);
+  // COLP aktif mi?
+  bool isCOLPActive();
+  // Arayanı söyleme aktif mi değil mi?
+  bool showCurrentCall(bool active);
+  // şimdi arayanı söyle
+  CallInfo readCurrentCall(String serialRaw);
+  // enable or disable reject all calls
+  bool setCallReject(bool rejectAll);
 };
 
 #endif

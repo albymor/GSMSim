@@ -216,46 +216,58 @@ bool GSMSimCall::showCurrentCall(bool active) {
 	}
 }
 // şimdi arayanı söyle
-String GSMSimCall::readCurrentCall(String serialRaw) {
+CallInfo GSMSimCall::readCurrentCall(String serialRaw) {
 
 	String sonuc = "";
+	CallInfo callInfo;
 	serialRaw.trim();
 	if (serialRaw.indexOf(F("+CLCC:")) != -1) {
 		String CLCCvalue = serialRaw.substring(serialRaw.indexOf(F("+CLCC:"))); // on answer call, it give +COLP: xxxx OK and +CLCC: xxx. So we must split it.
 		String durum = CLCCvalue.substring(CLCCvalue.indexOf(F("+CLCC:"))+11,CLCCvalue.indexOf(F("+CLCC:"))+12);
 		String numara = CLCCvalue.substring(CLCCvalue.indexOf(F(",\""))+2, CLCCvalue.indexOf(F("\",")));
 
+		callInfo.phone_number = numara;
+
 		if (durum == "0") {
 			durum = "STATUS:ACTIVE"; // Görüşme var
+			callInfo.status = CALL_ACTIVE;
 		}
 		else if (durum == "1") {
 			durum = "STATUS:HELD";
+			callInfo.status = CALL_HELD;
 		}
 		else if (durum == "2") {
 			durum = "STATUS:DIALING"; // Çevriliyor
+			callInfo.status = CALL_DIALING;
 		}
 		else if (durum == "3") {
 			durum = "STATUS:RINGING"; // Çalıyor
+			callInfo.status = CALL_RINGING;
 		}
 		else if (durum == "4") {
 			durum = "STATUS:INCOMING"; // Gelen arama
+			callInfo.status = CALL_INCOMING;
 		}
 		else if (durum == "5") {
 			durum = "STATUS:WAITING"; // gelen arama bekliyor
+			callInfo.status = CALL_WAITING;
 		}
 		else if (durum == "6") {
 			if(serialRaw.indexOf(F("BUSY")) != -1) {
 				durum = "STATUS:BUSY"; // kullanıcı meşgul bitti
+				callInfo.status = CALL_BUSY;
 			} else {
 				durum = "STATUS:CALLEND"; // görüşme bitti
+				callInfo.status = CALL_CALLEND;
 			}
 			
 		}
 
 		sonuc = durum + "|NUMBER:" + numara;
+		callInfo.string_repr = sonuc;
 	}
 
-	return sonuc;
+	return callInfo;
 }
 
 // gelen aramaları otomatik reddetmeyi açar kapatır
