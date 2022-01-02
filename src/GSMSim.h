@@ -48,6 +48,7 @@
 
 #define BUFFER_RESERVE_MEMORY	255
 #define TIME_OUT_READ_SERIAL	5000
+#define ALIVE_RETRY_COUNT		2
 
 
 // PIN (PERSONAL IDENTIFICATION NUMBER) STATUS
@@ -157,6 +158,10 @@ class GSMSim {
     String moduleDebug();
     // Ayarları cihaz üzerine kaydeder.
     bool saveSettingsToModule();
+
+    bool isModuleAlive();
+    void togglePower();
+    void powerOn();
 
 };
 

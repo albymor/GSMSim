@@ -42,7 +42,7 @@
 
 void GSMSim::init() {
 	pinMode(RESET_PIN, OUTPUT);
-	digitalWrite(RESET_PIN, HIGH);
+	digitalWrite(RESET_PIN, LOW);
 
 	if (LED_FLAG) {
 		pinMode(LED_PIN, OUTPUT);
@@ -59,23 +59,55 @@ void GSMSim::reset() {
 		digitalWrite(LED_PIN, HIGH);
 	}
 
-	digitalWrite(RESET_PIN, LOW);
-	delay(1000);
-	digitalWrite(RESET_PIN, HIGH);
-	delay(1000);
-
-	// Modul kendine geldi mi onu bekle
-	gsm.print(F("AT\r"));
-	_readSerial();
-	while (_buffer.indexOf(F("OK")) == -1) {
-		gsm.print(F("AT\r"));
-		_readSerial();
+	// check if module is alive
+	if (isModuleAlive())
+	{
+		// the module is alive
+		// power it off
+		togglePower();
 	}
+
+	powerOn();
 
 	if (LED_FLAG) {
 		digitalWrite(LED_PIN, LOW);
 	}
 }
+
+void GSMSim::powerOn()
+{
+	while(!isModuleAlive())
+	{
+		togglePower();
+	}
+}
+
+bool GSMSim::isModuleAlive() {
+	bool isAlive = false;
+	uint8_t retryCount = 0;
+
+	while (retryCount < ALIVE_RETRY_COUNT)
+	{
+		gsm.print(F("AT\r"));
+		_readSerial();
+		if (_buffer.indexOf(F("OK")) != -1) {
+			isAlive = true;
+			break;
+		}
+		retryCount++;
+		//delay(100);
+	}
+	
+	return isAlive;
+}
+
+void GSMSim::togglePower() {
+	digitalWrite(RESET_PIN, HIGH);
+	delay(1500);
+	digitalWrite(RESET_PIN, LOW);
+	delay(10000);	
+}
+
 
 // send AT Command to module
 String GSMSim::sendATCommand(char* command) {
@@ -474,6 +506,13 @@ void GSMSim::_readSerial() {
 	while (!gsm.available() && !(millis() > timeOld + TIME_OUT_READ_SERIAL)) { ; }
 	// beklemeden çıkınca ya da süre dolunca varsa seriali oku, yoksa çık git...
 	if(gsm.available()) { _buffer = gsm.readString(); }
+
+#ifdef ECHO_DEBUG
+	Serial.print("echo: '''");
+	Serial.print(_buffer);
+	Serial.println("'''");
+#endif
+
 }
 
 void GSMSim::_readSerial(uint32_t timeout) {
