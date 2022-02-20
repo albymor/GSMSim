@@ -9,3 +9,10 @@ void CallInfo::printInformation()
 {
 	Serial.println(getStringInformation());
 }
+
+void CallInfo::reset()
+{
+	status = CALL_CALLEND;
+    phone_number = "";
+    string_repr = "";
+}

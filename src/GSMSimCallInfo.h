@@ -24,12 +24,11 @@ public:
 
   String getStringInformation();
   void printInformation();
+  void reset();
 
   CallInfo()
   {
-    status = CALL_CALLEND;
-    phone_number = "";
-    string_repr = "";
+    reset();
   }
 };
 
