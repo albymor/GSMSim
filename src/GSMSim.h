@@ -163,6 +163,9 @@ class GSMSim {
     void togglePower();
     void powerOn();
 
+    bool setMicGain(unsigned int channel, unsigned int gain);
+    int getMicGain();
+
 };
 
 #endif

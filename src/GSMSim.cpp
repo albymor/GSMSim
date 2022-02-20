@@ -469,6 +469,45 @@ bool GSMSim::setSpeakerVolume(unsigned int level) {
 	}
 }
 
+bool GSMSim::setMicGain(unsigned int channel, unsigned int gain) {
+
+	// gain >=0 && gain <=15
+	if(gain > 15) {
+		gain = 15;
+	}
+
+	// channel >=0 && channel <=3
+	if (channel > 3 ) {
+		return false;
+	}
+
+	gsm.print(F("AT+CMIC="));
+	gsm.print(channel);
+	gsm.print(",");
+	gsm.print(gain);
+	gsm.print(F("\r"));
+
+	_readSerial();
+
+	if (_buffer.indexOf(F("OK")) != -1) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+int GSMSim::getMicGain() {
+	gsm.print(F("AT+CMIC?\r"));
+	_readSerial();
+
+	String veri = _buffer.substring(7, _buffer.indexOf(F("OK")));
+
+	Serial.println(veri);
+
+	return 0;
+}
+
 // Modül Debug
 String GSMSim::moduleDebug() {
 	gsm.print(F("AT&V\r"));
