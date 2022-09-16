@@ -188,7 +188,7 @@ String GSMSimHTTP::get(String url, bool read) {
 			return "ERROR:GPRS_NOT_CONNECTED";
 		}
 	} else {
-		get(url);
+		return get(url);
 	}	
 }
 // HTTP Get Method with SSL - No return web server response
@@ -370,7 +370,7 @@ String GSMSimHTTP::getWithSSL(String url, bool read) {
 			return "ERROR:GPRS_NOT_CONNECTED";
 		}
 	} else {
-		getWithSSL(url);
+		return getWithSSL(url);
 	}
 }
 
@@ -573,7 +573,7 @@ String GSMSimHTTP::post(String url, String data, String contentType, bool read) 
 			return "ERROR:GPRS_NOT_CONNECTED";
 		}
 	} else {
-		post(url, data, contentType);
+		return post(url, data, contentType);
 	}
 }
 
@@ -788,7 +788,7 @@ String GSMSimHTTP::postWithSSL(String url, String data, String contentType, bool
 			return "ERROR:GPRS_NOT_CONNECTED";
 		}
 	} else {
-		postWithSSL(url, data, contentType);
+		return postWithSSL(url, data, contentType);
 	}
 }
 

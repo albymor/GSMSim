@@ -145,7 +145,6 @@ bool GSMSimSMS::send(char* number, char* message) {
 	str += _buffer;
 	//expect CMGS:xxx   , where xxx is a number,for the sending sms.
 	
-	return str;
 	/**/
 	if (str.indexOf("+CMGS:") != -1) {
 		return true;
