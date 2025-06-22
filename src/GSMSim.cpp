@@ -39,10 +39,18 @@
 #include "GSMSim.h"
 #include "stdint.h"
 
+#ifdef SIM800L
+#define RESET_STATE LOW
+#define RELEASE_STATE HIGH
+#else
+#define RESET_STATE HIGH
+#define RELEASE_STATE LOW
+#endif
+
 
 void GSMSim::init() {
 	pinMode(RESET_PIN, OUTPUT);
-	digitalWrite(RESET_PIN, LOW);
+	digitalWrite(RESET_PIN, RELEASE_STATE);
 
 	if (LED_FLAG) {
 		pinMode(LED_PIN, OUTPUT);
@@ -102,9 +110,9 @@ bool GSMSim::isModuleAlive() {
 }
 
 void GSMSim::togglePower() {
-	digitalWrite(RESET_PIN, HIGH);
+	digitalWrite(RESET_PIN, RESET_STATE);
 	delay(1500);
-	digitalWrite(RESET_PIN, LOW);
+	digitalWrite(RESET_PIN, RELEASE_STATE);
 	delay(10000);	
 }
 
